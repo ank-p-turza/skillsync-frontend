@@ -1651,3 +1651,101 @@ body {
 .shadow-soft {
     box-shadow: 0 10px 40px rgba(20, 184, 166, 0.1);
 }
+
+
+
+/* Course Card Link Styling */
+.course-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Search Section Styles */
+.search-section {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 50px 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+}
+
+/* Loading Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Rating Stars */
+.course-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rating-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.stars {
+    display: flex;
+    gap: 2px;
+}
+
+.stars i {
+    font-size: 0.8rem;
+    color: #d1d5db;
+}
+
+.stars i.filled {
+    color: #fbbf24;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .courses-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .course-card {
+        margin: 0 auto;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .courses-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .filter-btn {
+        width: 200px;
+    }
+}

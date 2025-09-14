@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { cookies } from 'next/headers';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -11,8 +13,19 @@ export async function POST(request: NextRequest) {
       },
       timeout : 10000
     });
+    const data = response.data;
 
-    return NextResponse.json(response.data, { status: response.status });
+    const res = NextResponse.json({user : data.user});
+    (await cookies())
+    .set("access_token", data.access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: data.expires_in, 
+      path: "/",
+    });
+
+    return res;
   } catch (error: any) {
     console.error('Proxy error:', error);
     

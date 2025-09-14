@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import LinkBelow from "@/components/ui/link-below";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -22,6 +23,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generalError, setGeneralError] = useState<string>("");
+  const router = useRouter();
 
   const {
     register,
@@ -51,8 +53,9 @@ export default function Login() {
         alert(response.data.message);
       }
       else {
-        // other logic
-        alert(`Login Successfull ${response.data.access_token}`);
+        router.replace("/dashboard");
+        router.refresh(); // ensures server components see the new cookie
+        return;
       }
       reset();
     }
