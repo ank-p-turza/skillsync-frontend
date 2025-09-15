@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     res.cookies.set('email', body.email, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 5 * 60,
       path: '/',
     });

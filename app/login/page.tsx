@@ -56,7 +56,7 @@ export default function Login() {
       }
       else {
         // Redirect to dashboard and reload the page to update navigation
-        window.location.href = "/dashboard";
+        window.location.href = "/profile";
         return;
       }
       reset();

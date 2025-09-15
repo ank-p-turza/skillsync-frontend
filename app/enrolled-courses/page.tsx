@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 
 interface Enrollment {
     id: string;
@@ -31,6 +32,7 @@ export default function EnrolledCourses() {
     const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [unenrolling, setUnenrolling] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchEnrolledCourses = async () => {
@@ -69,6 +71,29 @@ export default function EnrolledCourses() {
 
         fetchEnrolledCourses();
     }, []);
+
+    const handleUnenroll = async (courseId: string) => {
+        setUnenrolling(courseId);
+        
+        try {
+            const response = await fetch(`/api/enrollments/unenroll/${courseId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (response.status >= 200 && response.status <= 299) {
+                // Remove the course from the list
+                setEnrolledCourses(prev => prev.filter(course => course.courseId !== courseId));
+            } else {
+                alert('Could not un-enroll');
+            }
+        } catch (error) {
+            console.error('Unenroll failed:', error);
+            alert('Could not un-enroll');
+        } finally {
+            setUnenrolling(null);
+        }
+    };
 
     if (loading) {
         return (
@@ -119,13 +144,13 @@ export default function EnrolledCourses() {
         <div className="container mx-auto px-4" style={{ marginTop: "100px", marginBottom: "50px" }}>
             <h1 className="text-4xl font-bold text-center mb-8">My Enrolled Courses</h1>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style={{padding : "20px"}}>
                 {enrolledCourses.map((enrolledCourse) => (
                     <div 
                         key={enrolledCourse.id} 
                         className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
                     >
-                        <div className="p-6">
+                        <div className="p-6" style={{margin: "20px"}}>
                             <h3 className="text-xl font-bold mb-2">
                                 {enrolledCourse.course.title}
                             </h3>
@@ -140,12 +165,24 @@ export default function EnrolledCourses() {
                                     <strong>Enrolled:</strong> {new Date(enrolledCourse.enrolled_at).toLocaleDateString()}
                                 </p>
                             </div>
-                            <Link 
-                                href={`/courses/${enrolledCourse.courseId}`}
-                                className="block w-full bg-green-500 hover:bg-green-600 text-white text-center py-2 px-4 rounded-lg transition-colors"
-                            >
-                                Continue Learning
-                            </Link>
+                            <div className="flex flex-col gap-2">
+                                <Link 
+                                    href={`/courses/${enrolledCourse.courseId}`}
+                                    className="block w-full text-white text-center py-2 px-4 rounded-lg transition-colors"
+                                >
+                                    <Button variant='primary' style={{width : "100%"}}>
+                                        Continue Learning
+                                    </Button>
+                                </Link>
+                                <Button 
+                                    variant='ghost' 
+                                    style={{width : "100%"}}
+                                    onClick={() => handleUnenroll(enrolledCourse.courseId)}
+                                    disabled={unenrolling === enrolledCourse.courseId}
+                                >
+                                    {unenrolling === enrolledCourse.courseId ? 'Unenrolling...' : 'Unenroll'}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 ))}
