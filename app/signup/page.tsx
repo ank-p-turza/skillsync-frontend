@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,7 +12,9 @@ import LinkBelow from "@/components/ui/link-below";
 const signupSchema = z
   .object({
     fullname: z.string().min(2, "Full name must be at least 2 characters"),
-    email: z.string().email("Please enter a valid email address"),
+    email: z
+      .string()
+      .regex(/^[^@\s]+@[^@\s]+\.[^@\s]+$/, "Please enter a valid email address"),
     phone: z
       .string()
       .regex(/^(01|09)\d{9}$/, "Please enter a valid phone number"),
@@ -33,10 +36,10 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    reset,
     setError,
     formState: { errors },
   } = useForm<SignupFormData>({
@@ -47,13 +50,6 @@ export default function Signup() {
     setIsSubmitting(true);
 
     try {
-      console.log("Sending signup request with data:", {
-        name: data.fullname,
-        email: data.email,
-        phone: data.phone,
-        password: data.password,
-      });
-
       const response = await axios.post(
         "/api/auth/signup",
         {
@@ -69,13 +65,10 @@ export default function Signup() {
 
       console.log("Signup response:", response);
 
-      if (response.data?.message) {
-        alert(response.data.message);
-      } else {
-        alert("Account created successfully!");
-      }
-
-      reset();
+      // On successful signup, redirect to /verify so server can read cookie
+      router.replace("/verify");
+      router.refresh();
+      return;
     } catch (error: any) {
       console.error("Signup error:", error);
 

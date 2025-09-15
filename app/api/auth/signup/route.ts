@@ -12,7 +12,17 @@ export async function POST(request: NextRequest) {
       timeout : 10000
     });
 
-    return NextResponse.json(response.data, { status: response.status });
+    // Set the email cookie so /verify can read it server-side
+    const res = NextResponse.json(response.data, { status: response.status });
+    // Use httpOnly so client JS can't read it; short maxAge (10 mins)
+    res.cookies.set('email', body.email, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 10 * 60,
+      path: '/',
+    });
+    return res;
   } catch (error: any) {
     console.error('Proxy error:', error);
     
