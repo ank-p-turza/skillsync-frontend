@@ -18,14 +18,12 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
-  // Function to truncate description to 3-4 words
   const getTruncatedDescription = (description: string) => {
     const words = description.split(' ');
     if (words.length <= 4) return description;
     return words.slice(0, 4).join(' ') + '...';
   };
 
-  // Generate a placeholder image based on course title
   const getPlaceholderImage = (title: string) => {
     const encodedTitle = encodeURIComponent(title);
     return `https://placehold.co/400x220?text=${encodedTitle}`;
@@ -33,7 +31,7 @@ export default function CourseCard({ course }: CourseCardProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'published':
+      case 'approved':
         return 'new-badge';
       case 'featured':
         return 'trending-badge';
@@ -68,9 +66,6 @@ export default function CourseCard({ course }: CourseCardProps) {
             </span>
           )}
           
-          <button className="wishlist-btn" aria-label="Add to wishlist">
-            <i className="far fa-heart"></i>
-          </button>
         </div>
 
         <div className="course-content">
@@ -94,22 +89,6 @@ export default function CourseCard({ course }: CourseCardProps) {
               />
               <span>Instructor</span>
             </div>
-            <div className="course-rating">
-              <span className="rating-value">4.5</span>
-              <div className="stars">
-                {[...Array(5)].map((_, i) => (
-                  <i
-                    key={i}
-                    className={`fas fa-star ${i < 4 ? 'filled' : ''}`}
-                  ></i>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="course-info">
-            <span><i className="fas fa-clock"></i> 8 weeks</span>
-            <span><i className="fas fa-users"></i> 1.2k students</span>
           </div>
 
           <div className="course-footer">

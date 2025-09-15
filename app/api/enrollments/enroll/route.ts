@@ -1,29 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+
 export async function POST(request: NextRequest) {
   try {
+    const token = request.cookies.get("access_token")?.value;
     const body = await request.json();
+    const { courseId } = body;
     
-    
-    const response = await axios.post('http://localhost:4000/auth/signup', body, {
+    await axios.post(`http://localhost:4000/enrollments/enroll/${courseId}`, {}, {
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      timeout : 10000
+      timeout: 10000
     });
 
-    const res = NextResponse.json(response.data, { status: response.status });
-    res.cookies.set('email', body.email, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 5 * 60,
-      path: '/',
-    });
-    return res;
+    return NextResponse.json({ message: "Successfully enrolled" });
   } catch (error: any) {
     console.error('Proxy error:', error);
-    
     if (error.response) {
       return NextResponse.json(
         error.response.data,

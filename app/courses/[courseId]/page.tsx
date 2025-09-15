@@ -1,7 +1,10 @@
+'use client';
 import Button from "@/components/ui/Button";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 async function getCourseDetails(courseId: string) {
     try {
@@ -20,9 +23,40 @@ async function getCourseDetails(courseId: string) {
     }
 }
 
-export default async function showCourseDetails({ params }: { params: Promise<{ courseId: string }> }) {
-    const course = await getCourseDetails((await params).courseId);
+export default function ShowCourseDetails() {
+    const params = useParams();
+    const courseId = params.courseId as string;
+    const [course, setCourse] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            const result = await getCourseDetails(courseId);
+            setCourse(result);
+            setLoading(false);
+        };
+        fetchCourse();
+    }, [courseId]);
+
+    const handleEnrollment = async () => {
+        try {
+            const response = await axios.post('/api/enrollments/enroll', {
+                courseId: courseId
+            });
+            
+            if (response) {
+                alert("enrolled in course");
+            }
+        } catch (error: any) {
+            console.error("Enrollment failed:", error);
+            alert("Enrollment failed");
+        }
+    }
     
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     if (!course) {
         return (
             <div className="w-full flex justify-center" style={{marginTop: "150px"}}>
@@ -60,7 +94,7 @@ export default async function showCourseDetails({ params }: { params: Promise<{ 
                     </p>
                     <h5 className="text-2xl font-bold">Price: $ {course.price}</h5>
                     <h6 className="font-bold">Instructor : <Link href={`/instructor/${course.instructor.id}`} className="text-amber-800 underline">{course.instructor.name}</Link></h6>
-                    <Button type="button" variant="primary" style={{marginTop: "20px", width:"350px"}}>Enroll Now</Button>
+                    <Button type="button" variant="primary" onClick={handleEnrollment} style={{marginTop: "20px", width:"350px"}}>Enroll Now</Button>
                 </div>
             </div>
         </div>

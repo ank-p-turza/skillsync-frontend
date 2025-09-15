@@ -3,7 +3,7 @@ import Button from "@/components/ui/Button";
 import LinkBelow from "@/components/ui/link-below";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react"
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -23,7 +23,9 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generalError, setGeneralError] = useState<string>("");
-  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const message = searchParams.get('message');
 
   const {
     register,
@@ -53,8 +55,8 @@ export default function Login() {
         alert(response.data.message);
       }
       else {
-        router.replace("/dashboard");
-        router.refresh(); // ensures server components see the new cookie
+        // Redirect to dashboard and reload the page to update navigation
+        window.location.href = "/dashboard";
         return;
       }
       reset();
@@ -97,6 +99,19 @@ export default function Login() {
         Login
       </h1>
       <form onSubmit={handleSubmit(onSubmit)} style={{ marginBottom: "30px" }}>
+        {message === 'signup' && (
+          <div style={{
+            background: "rgba(224, 255, 224, 1)", 
+            color: "#039000", 
+            textAlign: "center", 
+            fontWeight: "bold", 
+            borderRadius: "8px", 
+            padding: "10px",
+            marginBottom: "15px"
+          }}>
+            <p>Please Login again</p>
+          </div>
+        )}
 
         {/* Email */}
         <div style={{ marginBottom: "15px" }}>

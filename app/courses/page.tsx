@@ -148,10 +148,10 @@ export default function Courses() {
               All Courses
             </button>
             <button
-              className={`filter-btn ${statusFilter === 'published' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('published')}
+              className={`filter-btn ${statusFilter === 'approved' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('approved')}
             >
-              Published
+              Approved
             </button>
             <button
               className={`filter-btn ${statusFilter === 'draft' ? 'active' : ''}`}

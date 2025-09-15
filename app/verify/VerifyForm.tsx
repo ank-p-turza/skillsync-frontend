@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -46,7 +47,7 @@ export default function VerifyForm({ email }: { email: string }) {
       );
 
       // Handle success (adjust destination as needed)
-      router.replace("/login");
+      router.replace("/login?message=signup");
     } catch (err: any) {
       if (err.response?.data?.message) {
         const msg = Array.isArray(err.response.data.message)
@@ -118,7 +119,7 @@ export default function VerifyForm({ email }: { email: string }) {
         </div>
       )}
 
-      <button
+      <Button
         type="submit"
         disabled={isVerifying}
         style={{
@@ -129,7 +130,7 @@ export default function VerifyForm({ email }: { email: string }) {
         }}
       >
         {isVerifying ? "Verifying..." : "Verify"}
-      </button>
+      </Button>
     </form>
   );
 }

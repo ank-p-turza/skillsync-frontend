@@ -8,14 +8,14 @@ type ButtonProps = {
     style?: React.CSSProperties;
 }
 
-const Button : React.FC<ButtonProps> = ({
+const Button = ({
     children,
     onClick,
     type = 'button',
     variant = 'primary',
     disabled,
     style
-})=>{
+}: ButtonProps) => { 
     const baseStyles = "btn";
     const variantStyles = 
     variant == 'primary'? 'btn-primary' : 'btn-ghost';

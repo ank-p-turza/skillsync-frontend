@@ -10,14 +10,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // only dashboard is added for now
-  if (!token && (pathname.startsWith("/dashboard"))) {
+  // Protect authenticated routes
+  if (!token && (pathname.startsWith("/profile") || pathname.startsWith("/dashboard") || pathname.startsWith("/notifications") || pathname.startsWith("/enrolled-courses"))) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   if (token && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
     try{
-
         // axios and next/headers cookies() typically doesnt work in the edge runtime
         // so conventional fetch and res.headers.append() is used here
         const response = await fetch("http://localhost:4000/learner/test", {
@@ -33,7 +32,7 @@ export async function middleware(req: NextRequest) {
         }
         const data = await response.json();
         if(data.isOkay === true){
-            return NextResponse.redirect(new URL("/dashboard", req.url));
+            return NextResponse.redirect(new URL("/profile", req.url));
         }
     }
     catch(error : any){
