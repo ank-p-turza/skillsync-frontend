@@ -17,8 +17,6 @@ export async function middleware(req: NextRequest) {
 
   if (token && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
     try{
-        // axios and next/headers cookies() typically doesnt work in the edge runtime
-        // so conventional fetch and res.headers.append() is used here
         const response = await fetch("http://localhost:4000/learner/test", {
         headers: {
           Authorization: `Bearer ${token}`,
